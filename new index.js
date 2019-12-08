@@ -236,13 +236,29 @@
       gl.uniform1i(sampler0Loc, 0);
       
       // Asynchronously load an image
-      var image = new Image();
-      image.src = "images/txStainglass.bmp";
-      image.addEventListener('load', function() {
-        // Now that the image has loaded make copy it to the texture.
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,gl.UNSIGNED_BYTE, image);
-        gl.generateMipmap(gl.TEXTURE_2D);
+      var imageSource = 'images/ini.png';
+      var promise = new Promise(function(resolve, reject) {
+        var image = new Image();
+        if (!image) {
+            reject(new Error('Gagal membuat objek gambar'));
+        }
+        image.onload = function() {
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+            resolve('Sukses');
+        }
+        image.src = imageSource;
+      });
+      promise.then(function() {
+        if (callback) {
+            callback(args);
+        }
+      }, function (error) {
+        console.log('Galat pemuatan gambar', error);
       });
   
       render();
