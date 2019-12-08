@@ -24,5 +24,5 @@ void main() {
   fNormal = normalize(normalMatrix * vNormal);
 
   // Transfer nilai posisi verteks ke fragment shader
-  fPosition = vec3(modelMatrix * vec4(vPosition, 1.0));
+  fPosition = vec3(viewMatrix * modelMatrix * vec4(vPosition, 1.0));
 }

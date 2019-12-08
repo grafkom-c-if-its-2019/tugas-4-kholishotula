@@ -7,9 +7,7 @@ uniform float shininess;
 
 varying vec3 fPosition;
 varying vec3 fNormal;
-varying vac3 fColor;
-
-uniform sampler2D sampler0;
+varying vec3 fColor;
 
 void main() {
 
@@ -20,7 +18,7 @@ void main() {
   // Menghitung nilai cos dari sudut antara arah cahaya dan normal
   //  (sama dengan perkalian titik dari vektor arah cahaya dan vektor normal)
   vec3 lightDirection = normalize(lightPosition - fPosition);
-  float lightIntensity = max(dot(lightDirection, normal), 0.0); 
+  float lightIntensity = clamp(dot(lightDirection, normal), 0.0, 1.0); 
 
   // Menghitung nilai diffuse dari interaksi cahaya dan material
   vec3 diffuse = fColor * lightIntensity;
