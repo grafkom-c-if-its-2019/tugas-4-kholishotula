@@ -162,8 +162,8 @@
     var lightPosition = glMatrix.vec3.fromValues(0.5, 4.0, 3.0);
     gl.uniform3fv(lightColorLoc, lightColor);
     gl.uniform3fv(lightPositionLoc, lightPosition);
-    var ambientColorLoc = gl.getUniformLocation(program, 'ambientColor');
-    gl.uniform3fv(ambientColorLoc, glMatrix.vec3.fromValues(0.5, 0.5, 0.5));
+    var ambientColorLoc = gl.getUniformLocation(shaders[0], 'ambientColor');
+    gl.uniform3fv(ambientColorLoc, glMatrix.vec3.fromValues(0.17, 0.0, 0.30));
     var shineLoc = gl.getUniformLocation(shaders[0], 'shininess');
     var shine = 0.06;
     gl.uniform1f(shineLoc, shine);
@@ -252,6 +252,55 @@
     gl.enableVertexAttribArray(vPosition);
     gl.enableVertexAttribArray(vColor);
 
+    // Definisi cahaya
+    var lightColorLoc = gl.getUniformLocation(shaders[1], 'lightColor');
+    var lightPositionLoc = gl.getUniformLocation(shaders[1], 'lightPosition');
+    var lightColor = [1.0, 1.0, 1.0]; // Cahaya warna putih
+    var lightPosition = glMatrix.vec3.fromValues(0.5, 4.0, 3.0);
+    gl.uniform3fv(lightColorLoc, lightColor);
+    gl.uniform3fv(lightPositionLoc, lightPosition);
+    var ambientColorLoc = gl.getUniformLocation(shaders[1], 'ambientColor');
+    gl.uniform3fv(ambientColorLoc, glMatrix.vec3.fromValues(0.17, 0.0, 0.30));
+    var shineLoc = gl.getUniformLocation(shaders[1], 'shininess');
+    var shine = 0.06;
+    gl.uniform1f(shineLoc, shine);
+
+    // Definisi matriks pandangan (view matrix)
+    var vmLoc = gl.getUniformLocation(shaders[0], 'viewMatrix');
+    var vm = glMatrix.mat4.create();
+    glMatrix.mat4.lookAt(vm,
+      glMatrix.mat3.fromValues(0.0, 0.0,  0.0), // eye: posisi kamera
+      glMatrix.mat3.fromValues(0.0, 0.0, -2.0), // at: posisi kamera menghadap
+      glMatrix.mat3.fromValues(0.0, 1.0,  0.0)  // up: posisi arah atas kamera
+    );
+    gl.uniformMatrix4fv(vmLoc, false, vm);
+
+    // Definisi matriks proyeksi perspektif
+    var pmLoc = gl.getUniformLocation(shaders[0], 'perspectiveMatrix');
+    var pm = glMatrix.mat4.create();
+    glMatrix.mat4.perspective(pm,
+      glMatrix.glMatrix.toRadian(90), // fovy dalam radian
+      canvas.width / canvas.height,
+      1.0,  // near
+      10.0  // far
+    );
+    gl.uniformMatrix4fv(pmLoc, false, pm);
+
+    // Definisi matriks model
+    var mmLoc = gl.getUniformLocation(shaders[0], 'modelMatrix');
+    var mm = glMatrix.mat4.create();
+      glMatrix.mat4.translate(mm, mm, [0.0, 0.0, -0.2]);
+      glMatrix.mat4.rotateX(mm, mm, theta[xAxis]);
+      glMatrix.mat4.rotateY(mm, mm, theta[yAxis]);
+      glMatrix.mat4.rotateZ(mm, mm, theta[zAxis]);
+      gl.uniformMatrix4fv(mmLoc, false, mm);
+
+    // Definisi matriks normal
+    var nmLoc = gl.getUniformLocation(shaders[0], 'normalMatrix');
+    var nm = glMatrix.mat3.create();
+      glMatrix.mat3.normalFromMat4(nm, mm);
+      gl.uniformMatrix3fv(nmLoc, false, nm);
+
     return n;
   }
 
@@ -271,8 +320,7 @@
     adder = 0.81;
 
     function render(){
-      gl.clearColor(0.0, 0.0, 0.0, 1.0);
-      gl.enable(gl.DEPTH_TEST);
+      
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
       gl.useProgram(shaders[0]);
@@ -304,6 +352,32 @@
 
       requestAnimationFrame(render);
     }
+
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.enable(gl.DEPTH_TEST);
+
+    // Create a texture.
+    var texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    
+    // Fill the texture with a 1x1 blue pixel.
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+                  new Uint8Array([0, 0, 255, 255]));
+
+    gl.activeTexture(gl.TEXTURE0);
+    var sampler0Loc = gl.getUniformLocation(shaders[0], 'sampler0');
+    gl.uniform1i(sampler0Loc, 0);
+    
+    // Asynchronously load an image
+    var image = new Image();
+    image.src = "images/txStainglass.bmp";
+    image.addEventListener('load', function() {
+      // Now that the image has loaded make copy it to the texture.
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,gl.UNSIGNED_BYTE, image);
+      gl.generateMipmap(gl.TEXTURE_2D);
+    });
+
     render();
   }
 
