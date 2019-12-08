@@ -1,8 +1,18 @@
 precision mediump float;
 
-attribute vec3 aPosition;
+attribute vec3 vPosition;
 attribute vec3 vColor;
+attribute vec3 vNormal;
+
+varying vec3 fPosition;
+varying vec3 fNormal;
 varying vec3 fColor;
+
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 perspectiveMatrix;
+uniform mat3 normalMatrix;
+
 uniform vec3 theta;
 uniform vec3 point;
 uniform float diffScale;
@@ -35,6 +45,11 @@ void main() {
   );
 
   // perkalian dari kanan
-  gl_Position = vec4(aPosition, 1.0) * scale * rotateY;
-  gl_Position = gl_Position * translate;
+  // gl_Position = vec4(vPosition, 1.0) * scale * rotateY;
+  // gl_Position = gl_Position * translate;
+
+  gl_Position = perspectiveMatrix * viewMatrix * modelMatrix * vec4(vPosition, 1.0);
+
+  fPosition = vec3(viewMatrix * modelMatrix * vec4(vPosition, 1.0));
+  fNormal = normalMatrix * vNormal;
 }
