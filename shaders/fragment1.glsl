@@ -6,7 +6,7 @@ uniform vec3 ambientColor;
 
 varying vec3 fPosition;
 varying vec3 fNormal;
-varying vac3 fTexCoord;
+varying vec2 fTexCoord;
 
 uniform sampler2D sampler0;
 
@@ -24,23 +24,23 @@ void main() {
   // Fungsi untuk mendapatkan nilai warna dari tekstur
   vec4 tex0 = texture2D(sampler0, fTexCoord);
   
-  float specularPower = 120.0;
-  float specular = 0.0;
-  if (lightIntensity > 0.0){
-    // viewing vector
-    vec3 viewVec = vec3(0,0,1.0);
+  // float specularPower = 120.0;
+  // float specular = 0.0;
+  // if (lightIntensity > 0.0){
+  //   // viewing vector
+  //   vec3 viewVec = vec3(0,0,1.0);
 
-    // reflective vector
-    vec3 reflectVec = reflect(-lightDirection, normal);
+  //   // reflective vector
+  //   vec3 reflectVec = reflect(-lightDirection, normal);
 
-    // determine the specularFactor based on the dot product of viewing and reflective,
-    // taking at least a minimum of 0.0
-    float specularFactor = max(dot(reflectVec, viewVec), 0.0);
-    specular = pow(specularFactor, specularPower);
-  }
+  //   // determine the specularFactor based on the dot product of viewing and reflective,
+  //   // taking at least a minimum of 0.0
+  //   float specularFactor = max(dot(reflectVec, viewVec), 0.0);
+  //   specular = pow(specularFactor, specularPower);
+  // }
 
   // Menghitung nilai diffuse dari interaksi cahaya dan material
-  vec3 diffuse = lightColor * tex0.rgb * lightIntensity + specular;
+  vec3 diffuse = lightColor * tex0.rgb * lightIntensity;
 
   // Menghitung nilai ambient dari verteks
   vec3 ambient = ambientColor * tex0.rgb;

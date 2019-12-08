@@ -14,12 +14,12 @@
     var vertexShader = glUtils.getShader(gl, gl.VERTEX_SHADER, glUtils.SL.Shaders.v1.vertex),
         fragmentShader = glUtils.getShader(gl, gl.FRAGMENT_SHADER, glUtils.SL.Shaders.v1.fragment);   
     // huruf
-    var vertex2Shader = glUtils.getShader(gl, gl.VERTEX_SHADER, glUtils.SL.Shaders.v2.vertex),
-        fragment2Shader = glUtils.getShader(gl, gl.FRAGMENT_SHADER, glUtils.SL.Shaders.v2.fragment);
+    // var vertex2Shader = glUtils.getShader(gl, gl.VERTEX_SHADER, glUtils.SL.Shaders.v2.vertex),
+    //     fragment2Shader = glUtils.getShader(gl, gl.FRAGMENT_SHADER, glUtils.SL.Shaders.v2.fragment);
     var program = glUtils.createProgram(gl, vertexShader, fragmentShader);
-    var program2 = glUtils.createProgram(gl, vertex2Shader, fragment2Shader);
+    // var program2 = glUtils.createProgram(gl, vertex2Shader, fragment2Shader);
     shaders.push(program);
-    shaders.push(program2);
+    // shaders.push(program2);
 
     startDraw();
   }
@@ -148,7 +148,7 @@
       3,
       gl.FLOAT,
       gl.FALSE,
-      3 * Float32Array.BYTES_PER_ELEMENT,
+      8 * Float32Array.BYTES_PER_ELEMENT,
       5 * Float32Array.BYTES_PER_ELEMENT);
     
     gl.enableVertexAttribArray(vPosition);
@@ -156,53 +156,53 @@
     gl.enableVertexAttribArray(vNormal);
 
     // Definisi cahaya
-    var lightColorLoc = gl.getUniformLocation(shaders[0], 'lightColor');
-    var lightPositionLoc = gl.getUniformLocation(shaders[0], 'lightPosition');
-    var lightColor = [1.0, 1.0, 1.0]; // Cahaya warna putih
-    var lightPosition = glMatrix.vec3.fromValues(0.5, 4.0, 3.0);
-    gl.uniform3fv(lightColorLoc, lightColor);
-    gl.uniform3fv(lightPositionLoc, lightPosition);
-    var ambientColorLoc = gl.getUniformLocation(shaders[0], 'ambientColor');
-    gl.uniform3fv(ambientColorLoc, glMatrix.vec3.fromValues(0.17, 0.0, 0.30));
-    var shineLoc = gl.getUniformLocation(shaders[0], 'shininess');
-    var shine = 0.06;
-    gl.uniform1f(shineLoc, shine);
+    // var lightColorLoc = gl.getUniformLocation(shaders[0], 'lightColor');
+    // var lightPositionLoc = gl.getUniformLocation(shaders[0], 'lightPosition');
+    // var lightColor = [1.0, 1.0, 1.0]; // Cahaya warna putih
+    // var lightPosition = glMatrix.vec3.fromValues(0.5, 4.0, 3.0);
+    // gl.uniform3fv(lightColorLoc, lightColor);
+    // gl.uniform3fv(lightPositionLoc, lightPosition);
+    // var ambientColorLoc = gl.getUniformLocation(shaders[0], 'ambientColor');
+    // gl.uniform3fv(ambientColorLoc, glMatrix.vec3.fromValues(0.17, 0.0, 0.30));
+    // var shineLoc = gl.getUniformLocation(shaders[0], 'shininess');
+    // var shine = 0.06;
+    // gl.uniform1f(shineLoc, shine);
 
     // Definisi matriks pandangan (view matrix)
-    var vmLoc = gl.getUniformLocation(shaders[0], 'viewMatrix');
-    var vm = glMatrix.mat4.create();
-    glMatrix.mat4.lookAt(vm,
-      glMatrix.mat3.fromValues(0.0, 0.0,  0.0), // eye: posisi kamera
-      glMatrix.mat3.fromValues(0.0, 0.0, -2.0), // at: posisi kamera menghadap
-      glMatrix.mat3.fromValues(0.0, 1.0,  0.0)  // up: posisi arah atas kamera
-    );
-    gl.uniformMatrix4fv(vmLoc, false, vm);
+    // var vmLoc = gl.getUniformLocation(shaders[0], 'viewMatrix');
+    // var vm = glMatrix.mat4.create();
+    // glMatrix.mat4.lookAt(vm,
+    //   glMatrix.mat3.fromValues(0.0, 0.0,  0.0), // eye: posisi kamera
+    //   glMatrix.mat3.fromValues(0.0, 0.0, -2.0), // at: posisi kamera menghadap
+    //   glMatrix.mat3.fromValues(0.0, 1.0,  0.0)  // up: posisi arah atas kamera
+    // );
+    // gl.uniformMatrix4fv(vmLoc, false, vm);
 
     // Definisi matriks proyeksi perspektif
-    var pmLoc = gl.getUniformLocation(shaders[0], 'perspectiveMatrix');
-    var pm = glMatrix.mat4.create();
-    glMatrix.mat4.perspective(pm,
-      glMatrix.glMatrix.toRadian(90), // fovy dalam radian
-      canvas.width / canvas.height,
-      1.0,  // near
-      10.0  // far
-    );
-    gl.uniformMatrix4fv(pmLoc, false, pm);
+    // var pmLoc = gl.getUniformLocation(shaders[0], 'perspectiveMatrix');
+    // var pm = glMatrix.mat4.create();
+    // glMatrix.mat4.perspective(pm,
+    //   glMatrix.glMatrix.toRadian(90), // fovy dalam radian
+    //   canvas.width / canvas.height,
+    //   1.0,  // near
+    //   10.0  // far
+    // );
+    // gl.uniformMatrix4fv(pmLoc, false, pm);
 
     // Definisi matriks model
     var mmLoc = gl.getUniformLocation(shaders[0], 'modelMatrix');
-    var mm = glMatrix.mat4.create();
-      glMatrix.mat4.translate(mm, mm, [0.0, 0.0, -0.2]);
-      glMatrix.mat4.rotateX(mm, mm, theta[xAxis]);
-      glMatrix.mat4.rotateY(mm, mm, theta[yAxis]);
-      glMatrix.mat4.rotateZ(mm, mm, theta[zAxis]);
-      gl.uniformMatrix4fv(mmLoc, false, mm);
+    // var mm = glMatrix.mat4.create();
+    //   glMatrix.mat4.translate(mm, mm, [0.0, 0.0, -0.2]);
+    //   glMatrix.mat4.rotateX(mm, mm, theta[xAxis]);
+    //   glMatrix.mat4.rotateY(mm, mm, theta[yAxis]);
+    //   glMatrix.mat4.rotateZ(mm, mm, theta[zAxis]);
+    //   gl.uniformMatrix4fv(mmLoc, false, mm);
 
     // Definisi matriks normal
-    var nmLoc = gl.getUniformLocation(shaders[0], 'normalMatrix');
-    var nm = glMatrix.mat3.create();
-      glMatrix.mat3.normalFromMat4(nm, mm);
-      gl.uniformMatrix3fv(nmLoc, false, nm);
+    // var nmLoc = gl.getUniformLocation(shaders[0], 'normalMatrix');
+    // var nm = glMatrix.mat3.create();
+    //   glMatrix.mat3.normalFromMat4(nm, mm);
+    //   gl.uniformMatrix3fv(nmLoc, false, nm);
 
     return n;
   }
@@ -246,8 +246,18 @@
     var vPosition = gl.getAttribLocation(shaders[1], 'vPosition');
     var vColor = gl.getAttribLocation(shaders[1], 'vColor');
 
-    gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT, 0);
-    gl.vertexAttribPointer(vColor, 3, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT, 2 * Float32Array.BYTES_PER_ELEMENT);
+    gl.vertexAttribPointer(
+      vPosition,
+      2, gl.FLOAT,
+      false,
+      5 * Float32Array.BYTES_PER_ELEMENT,
+      0);
+    gl.vertexAttribPointer(vColor,
+      3,
+      gl.FLOAT,
+      false,
+      5 * Float32Array.BYTES_PER_ELEMENT,
+      2 * Float32Array.BYTES_PER_ELEMENT);
 
     gl.enableVertexAttribArray(vPosition);
     gl.enableVertexAttribArray(vColor);
@@ -306,7 +316,7 @@
 
   function startDraw() {
     thetaLoc = gl.getUniformLocation(shaders[0], 'theta');
-    theta = [20, 40, 0];
+    theta = [0.0, 0.0, 0.0];
 
     theta2Loc = gl.getUniformLocation(shaders[1], 'theta'); 
     transLoc = gl.getUniformLocation(shaders[1], 'point');
@@ -327,7 +337,7 @@
 
       var nLine = initCubes(gl);
       gl.uniform3fv(thetaLoc, theta);
-      gl.drawArrays(gl.LINES, 0, nLine);
+      gl.drawArrays(gl.TRIANGLES, 0, nLine);
 
       gl.useProgram(shaders[1]);
 
@@ -379,6 +389,7 @@
     });
 
     render();
+    
   }
 
 })(window || this);
